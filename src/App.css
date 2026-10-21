@@ -472,7 +472,8 @@ button:disabled {
     linear-gradient(145deg, rgba(255, 241, 247, 0.1), rgba(255, 241, 247, 0.035)),
     rgba(255, 255, 255, 0.02);
   box-shadow: 0 20px 65px rgba(5, 0, 9, 0.2);
-  text-align: left;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .letter-card::before {
@@ -486,10 +487,12 @@ button:disabled {
 .letter-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
   color: #ffd4e2;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(21px, 5vw, 25px);
+  text-align: center;
 }
 
 .letter-top span {
@@ -508,6 +511,7 @@ button:disabled {
   min-height: 130px;
   margin: 18px 0 18px;
   outline-offset: 5px;
+  text-align: center;
 }
 
 .typing-cursor {
@@ -520,11 +524,12 @@ button:disabled {
 }
 
 .letter-signoff {
-  text-align: right;
+  text-align: center;
   color: #ffc1d5;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(18px, 4vw, 21px);
   font-style: italic;
+  margin-top: 14px;
 }
 
 .letter-flower {
@@ -808,12 +813,25 @@ button:disabled {
   border: 1px solid rgba(255, 221, 235, 0.15);
 }
 
-.promise-card p {
+.promise-card p,
+.promise-message p {
   color: #ead9e3;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(16px, 4vw, 19px);
   line-height: 1.8;
   margin: 0 0 16px;
+}
+
+.promise-line-gap {
+  height: 28px;
+  width: 100%;
+}
+
+.telugu-label {
+  font-style: italic;
+  font-weight: 600;
+  color: #ffd8e5 !important;
+  margin-top: 6px;
 }
 
 .promise-card span,
@@ -892,6 +910,139 @@ button:disabled {
 
 .card-music-section .song-row:first-child {
   border-top: 1px solid rgba(255, 223, 237, 0.12);
+}
+
+/* Surprise Photo Section Inside Promise Card */
+.card-photo-section {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px dashed rgba(255, 216, 231, 0.28);
+  text-align: left;
+}
+
+.card-photo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-photo-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 185, 215, 0.16);
+  border: 1px solid rgba(255, 216, 231, 0.3);
+  display: grid;
+  place-items: center;
+  color: var(--pink);
+  flex-shrink: 0;
+}
+
+.card-photo-header h4 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(20px, 4.5vw, 24px);
+  font-weight: 600;
+  color: #fff0f6;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.card-photo-subtitle {
+  font-family: "DM Sans", sans-serif;
+  font-size: clamp(10px, 2.5vw, 11px);
+  color: #d6bacb;
+  letter-spacing: 0.03em;
+  display: block;
+  margin-top: 2px;
+}
+
+.reveal-photo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 13px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 185, 215, 0.18), rgba(255, 216, 231, 0.08));
+  border: 1.5px dashed rgba(255, 185, 215, 0.55);
+  color: #fff0f6;
+  cursor: pointer;
+  font-size: clamp(12px, 3.2vw, 13px);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  .reveal-photo-button:hover {
+    background: rgba(255, 185, 215, 0.28);
+    border-color: rgba(255, 216, 231, 0.85);
+    box-shadow: 0 8px 25px rgba(255, 159, 188, 0.25);
+  }
+}
+
+.reveal-photo-button:active {
+  transform: scale(0.98);
+}
+
+.reveal-photo-sparkle {
+  font-size: 18px;
+}
+
+.surprise-photo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.surprise-polaroid {
+  background: #fff5f1;
+  color: #58374a;
+  padding: 12px 12px 18px;
+  border-radius: 4px;
+  box-shadow: 0 16px 40px rgba(5, 0, 9, 0.35);
+  max-width: 290px;
+  width: 100%;
+  margin: 0 auto;
+  transform: rotate(1deg);
+  transition: transform 0.3s ease;
+}
+
+@media (hover: hover) {
+  .surprise-polaroid:hover {
+    transform: rotate(0deg) scale(1.02);
+  }
+}
+
+.surprise-polaroid img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+  background: #e9d0dc;
+}
+
+.surprise-polaroid figcaption {
+  padding-top: 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 16px;
+  font-style: italic;
+  text-align: center;
+  color: #58374a;
+}
+
+.photo-revealed-note {
+  font-size: 12px;
+  color: #ffd4e2;
+  font-style: italic;
+  margin: 14px 0 0;
+  text-align: center;
 }
 
 .final-animals {

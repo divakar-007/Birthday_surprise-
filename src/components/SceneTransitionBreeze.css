@@ -1,0 +1,21 @@
+.scene-breeze-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+}
+
+.breeze-petal {
+  position: fixed;
+  font-size: clamp(20px, 4.5vw, 28px);
+  filter: drop-shadow(0 6px 14px rgba(255, 110, 160, 0.45));
+  will-change: transform, opacity;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-breeze-overlay {
+    display: none !important;
+  }
+}

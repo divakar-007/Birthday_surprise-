@@ -3,30 +3,26 @@ import { AnimatePresence, motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import {
   Heart,
-  Music2,
-  Play,
-  Pause,
   Gift,
   Sparkles,
   RotateCcw,
   ChevronDown,
   LockKeyhole,
-  Volume2,
 } from "lucide-react";
+import HeartTree from "./components/HeartTree";
+import SparkleTrail from "./components/SparkleTrail";
+import WaxEnvelope from "./components/WaxEnvelope";
+import AnimatedCandle from "./components/AnimatedCandle";
+import VinylPlayer from "./components/VinylPlayer";
+import PhotoDevelopingReveal from "./components/PhotoDevelopingReveal";
+import SceneTransitionBreeze from "./components/SceneTransitionBreeze";
 import "./App.css";
 
-const memories = [
-  { image: "/photos/memory1.jpg", caption: "A memory I'll always keep ♡", tilt: "-5deg" },
-  { image: "/photos/memory2.jpg", caption: "My favourite kind of chaos", tilt: "4deg" },
-  { image: "/photos/memory3.jpg", caption: "Us being us ✨", tilt: "-3deg" },
-  { image: "/photos/memory4.jpg", caption: "More memories to come", tilt: "5deg" },
-];
-
-const songs = [
-  { title: "Our favourite song", artist: "Song artist", file: "/music/song1.mp3" },
-  { title: "A song that feels like us", artist: "Song artist", file: "/music/song2.mp3" },
-  { title: "One for the memories", artist: "Song artist", file: "/music/song3.mp3" },
-];
+const song = {
+  title: "Our Special Song",
+  artist: "For Mounika ♡",
+  file: "/music/fav_song.mp3",
+};
 
 const decorations = [
   { symbol: "🌹", left: "5%", delay: "0s" },
@@ -39,7 +35,7 @@ const decorations = [
 ];
 
 const personalMessage =
-  "Happy Birthday my divakar. Thank you for every laugh, every little memory, and every moment you made better just by being there. I hope this new year of your life brings you the happiness, peace, love, and beautiful surprises you deserve. Always remember how loved you are. ♡";
+  "Happy Birthday my Mounika. Thank you for every laugh, every little memory, and every moment you made better just by being there. I hope this new year of your life brings you the happiness, peace, love, and beautiful surprises you deserve. Always remember how loved you are. ♡";
 
 function burstConfetti() {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
@@ -54,15 +50,17 @@ function burstConfetti() {
 export default function App() {
   const [scene, setScene] = useState(0);
   const [giftOpened, setGiftOpened] = useState(false);
+  const [letterOpened, setLetterOpened] = useState(false);
   const [typedMessage, setTypedMessage] = useState("");
-  const [playingIndex, setPlayingIndex] = useState(null);
-  const [candleLit, setCandleLit] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [candleLit, setCandleLit] = useState(true);
   const [secretOpened, setSecretOpened] = useState(false);
+  const [photoRevealed, setPhotoRevealed] = useState(false);
   const audioRef = useRef(null);
   const messageRef = useRef(null);
 
   useEffect(() => {
-    if (scene !== 2) return undefined;
+    if (scene !== 2 || !letterOpened) return undefined;
 
     let index = 0;
     const timer = window.setInterval(() => {
@@ -72,13 +70,13 @@ export default function App() {
     }, 28);
 
     return () => window.clearInterval(timer);
-  }, [scene]);
+  }, [scene, letterOpened]);
 
   useEffect(() => {
-    if (scene === 2) {
+    if (scene === 2 && letterOpened) {
       messageRef.current?.focus({ preventScroll: true });
     }
-  }, [scene]);
+  }, [scene, letterOpened]);
 
   function goToScene(nextScene) {
     if (nextScene === 2) {
@@ -95,29 +93,29 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function toggleSong(index) {
+  function toggleMusic() {
     const audio = audioRef.current;
-
     if (!audio) return;
 
-    if (playingIndex === index) {
+    if (isPlaying) {
       audio.pause();
-      setPlayingIndex(null);
-      return;
+      setIsPlaying(false);
+    } else {
+      audio.src = song.file;
+      audio.load();
+      audio.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          // Fallback to .mpeg if needed
+          audio.src = "/music/fav_song.mpeg";
+          audio.load();
+          audio.play()
+            .then(() => setIsPlaying(true))
+            .catch(() => {
+              setIsPlaying(false);
+            });
+        });
     }
-
-    audio.pause();
-    audio.src = songs[index].file;
-    audio.load();
-
-    audio.play()
-      .then(() => setPlayingIndex(index))
-      .catch(() => {
-        setPlayingIndex(null);
-        window.alert(
-          `Couldn't play "${songs[index].title}". Add the MP3 file at ${songs[index].file} and try again.`
-        );
-      });
   }
 
   function replaySurprise() {
@@ -128,26 +126,30 @@ export default function App() {
 
     setScene(0);
     setGiftOpened(false);
+    setLetterOpened(false);
     setTypedMessage("");
-    setPlayingIndex(null);
-    setCandleLit(false);
+    setIsPlaying(false);
+    setCandleLit(true);
     setSecretOpened(false);
+    setPhotoRevealed(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const sceneNames = ["Surprise", "Birthday", "Your letter", "Memories", "Final surprise"];
+  const sceneNames = ["Surprise", "Birthday", "Your letter", "One last surprise"];
 
   return (
     <main className="birthday-app">
+      {/* Magic Pointer / Touch Sparkle Stardust Trail */}
+      <SparkleTrail />
+
+      {/* Gentle Rose Petal & Sparkle Breeze on scene transition */}
+      <SceneTransitionBreeze triggerKey={scene} />
+
       <audio
         ref={audioRef}
-        onEnded={() => setPlayingIndex(null)}
-        onPause={() => setPlayingIndex(null)}
-        onPlay={() => {
-          const audio = audioRef.current;
-          const index = songs.findIndex((song) => song.file === audio?.src?.split(window.location.origin)[1]);
-          if (index >= 0) setPlayingIndex(index);
-        }}
+        onEnded={() => setIsPlaying(false)}
+        onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
       />
 
       <div className="fairy-lights" aria-hidden="true">
@@ -170,9 +172,9 @@ export default function App() {
 
       <header className="top-bar">
         <a className="brand" href="#top" onClick={(event) => { event.preventDefault(); goToScene(0); }}>
-          <Heart size={17} fill="currentColor" /> a little love letter
+          <Heart size={17} fill="currentColor" /> a little letter
         </a>
-        <span className="scene-counter">{String(scene + 1).padStart(2, "0")} / 05</span>
+        <span className="scene-counter">{String(scene + 1).padStart(2, "0")} / 04</span>
       </header>
 
       <nav className="scene-nav" aria-label="Birthday story scenes">
@@ -200,10 +202,13 @@ export default function App() {
             transition={{ duration: 0.45 }}
           >
             <span className="eyebrow"><Sparkles size={15} /> made with love, just for you</span>
-            <h1 className="hero-title">Psst...<br /><em>something is waiting</em></h1>
+            <h1 className="hero-title">Mounika<br /><em>something is waiting</em></h1>
             <p className="hero-subtitle">
               A tiny surprise for someone who makes ordinary days feel magical.
             </p>
+
+            {/* Tree with heart leaves animation */}
+            <HeartTree onCelebrate={burstConfetti} />
 
             <motion.button
               className={`gift-button ${giftOpened ? "opened" : ""}`}
@@ -224,7 +229,7 @@ export default function App() {
               <Heart size={17} fill="currentColor" />
             </motion.button>
 
-            <div className="tiny-decor" aria-hidden="true">🌷 🧸 🐼 🌷</div>
+            <div className="tiny-decor" aria-hidden="true">🌷 </div>
             <p className="soft-note">Best experienced with a little music ♡</p>
           </motion.section>
         )}
@@ -246,7 +251,7 @@ export default function App() {
               <div className="cake">🎂</div>
               <div className="birthday-friends">🧸 <span>💗</span> 🐼</div>
             </div>
-            <h1 className="birthday-title">Happy Birthday,<br /><em>Divakar</em></h1>
+            <h1 className="birthday-title">Happy Birthday,<br /><em>Mounika</em></h1>
             <p className="hero-subtitle">
               Today, the world gets to celebrate the wonderful human you are.
             </p>
@@ -269,23 +274,34 @@ export default function App() {
             transition={{ duration: 0.45 }}
           >
             <span className="eyebrow">scene 03 · words from my heart</span>
-            <h2 className="section-title">A little letter <em>for you</em></h2>
-            <div className="letter-card">
-              <div className="letter-top">To my favourite person, <span>♡</span></div>
-              <p
-                className="typed-message"
-                ref={messageRef}
-                tabIndex={-1}
-                aria-label={personalMessage}
-              >
-                {typedMessage}<span className="typing-cursor" aria-hidden="true">|</span>
-              </p>
-              <div className="letter-signoff">with all my love, always ♡</div>
-              <span className="letter-flower" aria-hidden="true">🌷</span>
-            </div>
+            <h2 className="section-title">My wishes  <em>for you</em></h2>
+
+            {/* 3D Wax Seal Envelope wrapper */}
+            <WaxEnvelope
+              isOpened={letterOpened}
+              onOpen={() => {
+                setLetterOpened(true);
+                burstConfetti();
+              }}
+            >
+              <div className="letter-card">
+                <div className="letter-top">To my favourite person, <span>♡</span></div>
+                <p
+                  className="typed-message"
+                  ref={messageRef}
+                  tabIndex={-1}
+                  aria-label={personalMessage}
+                >
+                  {typedMessage}<span className="typing-cursor" aria-hidden="true">|</span>
+                </p>
+                <div className="letter-signoff">with all my love, Diva ♡</div>
+                <span className="letter-flower" aria-hidden="true">🌷</span>
+              </div>
+            </WaxEnvelope>
+
             <div className="scene-actions">
               <button className="primary-button" type="button" onClick={() => goToScene(3)}>
-                Open our memories <Heart size={17} />
+                One last surprise <Gift size={17} />
               </button>
               <button className="text-button" type="button" onClick={() => goToScene(1)}>← Back to birthday</button>
             </div>
@@ -294,56 +310,6 @@ export default function App() {
 
         {scene === 3 && (
           <motion.section
-            key="gallery"
-            className="scene gallery-scene"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -18 }}
-            transition={{ duration: 0.45 }}
-          >
-            <span className="eyebrow">scene 04 · tiny moments, forever memories</span>
-            <h2 className="section-title">Our little <em>scrapbook</em></h2>
-            <p className="section-description">Four little spaces for memories I never want to forget.</p>
-
-            <div className="polaroid-grid">
-              {memories.map((memory, index) => (
-                <motion.figure
-                  className="polaroid"
-                  key={memory.image}
-                  style={{ "--tilt": memory.tilt }}
-                  whileHover={{ y: -7, rotate: 0, scale: 1.03 }}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.12 }}
-                >
-                  <img
-                    src={memory.image}
-                    alt={`Friendship memory ${index + 1}`}
-                    loading="lazy"
-                    onError={(event) => {
-                      event.currentTarget.style.display = "none";
-                      if (event.currentTarget.nextElementSibling) {
-                        event.currentTarget.nextElementSibling.style.display = "grid";
-                      }
-                    }}
-                  />
-                  <div className="photo-placeholder" aria-hidden="true">📷<span>Add our photo</span></div>
-                  <figcaption>{memory.caption}</figcaption>
-                </motion.figure>
-              ))}
-            </div>
-            <p className="photo-tip">♡ Replace the sample photo paths with your own pictures.</p>
-            <div className="scene-actions">
-              <button className="primary-button" type="button" onClick={() => goToScene(4)}>
-                One last surprise <Gift size={17} />
-              </button>
-              <button className="text-button" type="button" onClick={() => goToScene(2)}>← Back to letter</button>
-            </div>
-          </motion.section>
-        )}
-
-        {scene === 4 && (
-          <motion.section
             key="final"
             className="scene final-scene"
             initial={{ opacity: 0, scale: 0.96 }}
@@ -351,22 +317,19 @@ export default function App() {
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.45 }}
           >
-            <span className="eyebrow">scene 05 · a special surprise for you</span>
+            <span className="eyebrow">scene 04 · one last surprise</span>
             <h2 className="section-title">Make a wish, <em>birthday star.</em></h2>
             <p className="section-description">Take a little moment just for yourself.</p>
 
-            <button
-              type="button"
-              className={`candle-button ${candleLit ? "is-lit" : ""}`}
-              onClick={() => {
-                setCandleLit((current) => !current);
+            {/* Realistic Candle with Flickering Flame & Smoke Blow-Out */}
+            <AnimatedCandle
+              isLit={candleLit}
+              onToggle={() => {
+                const nextState = !candleLit;
+                setCandleLit(nextState);
                 if (!candleLit) burstConfetti();
               }}
-              aria-pressed={candleLit}
-            >
-              <span className="candle-emoji" aria-hidden="true">{candleLit ? "🕯️✨" : "🕯️"}</span>
-              <span>{candleLit ? "Your wish is glowing!" : "Light your birthday candle"}</span>
-            </button>
+            />
 
             <div className="final-gift-wrap">
               <motion.div
@@ -377,7 +340,7 @@ export default function App() {
               >
                 {secretOpened ? "💌" : "🎁"}
               </motion.div>
-              <h3>{secretOpened ? "A promise from me to you" : "There's one more little secret..."}</h3>
+              <h3>{secretOpened ? "A few words from my heart" : "There's one more little secret..."}</h3>
               {!secretOpened ? (
                 <button className="primary-button" type="button" onClick={() => { setSecretOpened(true); burstConfetti(); }}>
                   <LockKeyhole size={17} /> Open your final gift
@@ -389,66 +352,63 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <p>
-                    I promise to celebrate your wins, listen when life feels heavy,
-                    laugh with you over the silliest things, and keep making beautiful
-                    memories with you. We may grow and change, but I hope our friendship
-                    always has a little corner that feels like home. No matter what,
-                    you will always have someone cheering for you. 🤍
-                  </p>
+                  <div className="promise-message">
+                    <p>For a long time, I’ve been thinking about telling you this. Thank you for everything, ma. ❤️</p>
+                    <p>You are the first girl who made me feel what it’s like to be loved by a girl. You are my first love, like a mutual one-sided love. 😅 Thank you for showing me love, feelings, and care. I don’t know whether it was real or fake, but I felt that everything was genuine, and I truly felt your love.</p>
+                    <p>We stopped talking, and I guess everything is fate. But my care for you will never stop. You used to message me once a week and ask how I was and whether I had eaten. But in recent months, you haven’t been asking me anymore. I’m the only one who keeps asking you now. That’s not a problem, though. 😅 Maybe you’re busy, and that’s okay.</p>
+                    <p>Anyway, take care. That’s all I can say. If I say anything more, you might not like it.</p>
+                    <p>I wanted to send you a gift, but you don’t even like it when I message or call you. So, I thought you might get really angry if I sent you a gift, and your family might ask you questions too. That’s why I chose a small gift that I could manage to send you. I hope you like it. 😅</p>
+                    <p>Also, remember you once asked me to dedicate a song to you? That’s why I’ve added a song below. It’s my favourite song, and whenever I hear it playing, you’re the only person who comes to my mind. This song is for you. ❤️</p>
+                    <p>I’ve also attached a small photo at the end. That photo was on my friend’s phone, and I thought it might be a little surprise for you. That’s why I added it at the end.</p>
+                    <p>That’s it. This is my little gift for your birthday. ❤️</p>
+                    <p>If you ever get married in the future, send me an invitation. I’ll come.</p>
+                    <p>The reason I’m sending such a long message is that I can’t keep waiting for your messages anymore. Not only that, but I also feel like I’m disturbing you. That’s why I wanted to tell you everything in this one message.</p>
+                    <p>Be happy, eat well, and take care of yourself.</p>
+
+                    {/* One line gap before In telugu */}
+                    <div className="promise-line-gap" aria-hidden="true" />
+
+                    <p className="telugu-label">In telugu,</p>
+                    <p>Chala rojula nunchi neeku ee vishayam cheppalani anukuntu unna. Thank you for everything ma ❤️.</p>
+                    <p>Oka ammayi love chesthe ela untundo naaku feel ayyela chesina first ammayivi nuvve. Nuvve naa first love, mana iddari madhya oka rakamaina double side love la anipinchindi 😅. Naaku love, feelings, care chupinchinanduku chala thanks. Adhi real aa fake aa naaku teliyadhu, kaani naaku avanni nijamaina feelings laane anipinchayi. Nee love ni nenu feel ayyanu.</p>
+                    <p>Manam maatladukovadam aapesam. Antha fate anukuntunna. Kaani nee meeda naaku unna care maatram eppatiki aagadhu.</p>
+                    <p>Weekly once nuvvu naaku message chesi, "Ela unnavu? Tinnava?" ani adige daanivi. Kaani recent months nunchi nuvvu ala adagadam ledhu. Ippudu nenu maatrame ninnu adugutunna. Adhi kuda naaku problem em kaadhu 😅. Nuvvu busy ga untav ani ardham chesukuntunna. It's okay.</p>
+                    <p>Anyways, take care. Anthakante ekkuva emi cheppalenu. Daani kante ekkuva edhaina chepthe neeku nachadhu.</p>
+                    <p>Neeku edhaina gift pampinchalani anukunna. Kaani nenu neeku message cheyadam, call cheyadam kuda neeku nachadhu. Anduke gift pampisthe nuvvu chala kopam padathavemo ani anipinchindi. Adhi maatrame kaakunda, mee intlo kuda edhaina adugutharemo. Anduke naa valla ayina oka chinna gift pampisthunna. Neeku nachuthundani anukuntunna 😅.</p>
+                    <p>Inka, naaku oka song dedicate cheyyamani nuvvu adigavu kadha, gurthundha? Anduke kinda oka song add chesanu. Adhi naa favourite song. Eppudaina aa song play ayina, naa mind lo gurthochedhi nuvve. This song is for you ❤️.</p>
+                    <p>Last lo oka chinna photo kuda attach chesanu. Aa photo naa friend phone lo undhi. Neeku oka surprise la untundani anukuni last lo pettanu.</p>
+                    <p>Anthe. Idhi nee birthday kosam naa chinna gift 🎂❤️.</p>
+                    <p>Future lo neeku marriage fix ayithe naaku invitation pampinchu. Nenu kachithanga vasthanu.</p>
+                    <p>Enduku intha pedda message pampinchanu ante, ika nee message kosam wait chesthu undadam naa valla avvatledhu. Adhi maatrame kaakunda, nenu ninnu disturb chesthunnana ani kuda anipisthundhi. Anduke naa manasulo unna vishayalanni ee okka pedda message lo cheppesa.</p>
+                    <p>Happy ga undu, baaga thinu, jagrathaga undu ☺️❤️.</p>
+                  </div>
                   <span className="promise-signoff">Friends by chance, family by heart. ♡</span>
 
+                  {/* Spinning Vintage Vinyl Record Player with Sound Waves */}
                   <div className="card-music-section">
-                    <div className="card-music-heading">
-                      <div className="card-music-icon" aria-hidden="true">
-                        <Music2 size={18} />
-                      </div>
-                      <div>
-                        <h4>Our little soundtrack</h4>
-                        <span className="card-music-subtitle">Press play to listen to our special songs ♫</span>
-                      </div>
-                    </div>
-
-                    <div className="song-list">
-                      {songs.map((song, index) => (
-                        <div
-                          className={`song-row ${playingIndex === index ? "is-playing" : ""}`}
-                          key={song.file}
-                        >
-                          <span className="song-number">{String(index + 1).padStart(2, "0")}</span>
-                          <div className="song-info">
-                            <strong>{song.title}</strong>
-                            <span>{song.artist}</span>
-                          </div>
-                          <button
-                            type="button"
-                            className="play-button"
-                            onClick={() => toggleSong(index)}
-                            aria-label={`${playingIndex === index ? "Pause" : "Play"} ${song.title}`}
-                          >
-                            {playingIndex === index ? <Pause size={18} /> : <Play size={18} />}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="music-help">
-                      <Volume2 size={14} /> Add your favourite MP3 files to make this playlist yours.
-                    </p>
+                    <VinylPlayer
+                      song={song}
+                      isPlaying={isPlaying}
+                      onToggle={toggleMusic}
+                    />
                   </div>
+
+                  {/* Instant Film "Photo Developing" Reveal with Flash & Shake Magic */}
+                  <PhotoDevelopingReveal
+                    photoRevealed={photoRevealed}
+                    onReveal={() => setPhotoRevealed(true)}
+                    onCelebrate={burstConfetti}
+                  />
                 </motion.div>
               )}
-            </div>
-
-            <div className="final-animals" aria-label="A teddy bear, panda, and flowers">
-              
             </div>
 
             <div className="scene-actions">
               <button className="replay-button" type="button" onClick={replaySurprise}>
                 <RotateCcw size={16} /> Replay the whole surprise
               </button>
-              <button className="text-button" type="button" onClick={() => goToScene(3)}>
-                ← Back to our memories
+              <button className="text-button" type="button" onClick={() => goToScene(2)}>
+                ← Back to letter
               </button>
             </div>
           </motion.section>

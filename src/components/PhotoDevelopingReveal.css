@@ -1,0 +1,299 @@
+.photo-develop-wrapper {
+  position: relative;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px dashed rgba(255, 216, 231, 0.28);
+  text-align: left;
+  width: 100%;
+}
+
+/* Camera flash overlay */
+.camera-flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #ffffff 0%, rgba(255, 240, 248, 0.85) 60%, transparent 100%);
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* Polaroid Photo Card Frame */
+.developing-polaroid {
+  position: relative;
+  background: #fff5f1;
+  color: #58374a;
+  padding: 12px 12px 18px;
+  border-radius: 8px;
+  box-shadow: 0 16px 45px rgba(5, 0, 9, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+  transform: rotate(1deg);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+@media (hover: hover) {
+  .developing-polaroid:hover {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 0 20px 50px rgba(5, 0, 9, 0.55), 0 0 0 1px rgba(255, 200, 225, 0.3);
+  }
+}
+
+/* Film container: 9:16 portrait aspect ratio matching 1080x1920 full-size photo */
+.film-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 520px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #180e16;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.film-image-container:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 185, 215, 0.9);
+}
+
+/* Chemical developing effect & full image display (no crop) */
+.film-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.film-photo.is-developing {
+  filter: blur(10px) brightness(0.2) grayscale(0.9);
+  animation: develop-chemical 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.film-photo.is-developed {
+  filter: blur(0px) brightness(1) grayscale(0);
+}
+
+@keyframes develop-chemical {
+  0% {
+    filter: blur(12px) brightness(0.15) contrast(1.4) sepia(0.8);
+    transform: scale(1.04);
+  }
+  40% {
+    filter: blur(6px) brightness(0.55) contrast(1.2) sepia(0.4);
+  }
+  75% {
+    filter: blur(2px) brightness(0.9) contrast(1.05) sepia(0.1);
+  }
+  100% {
+    filter: blur(0px) brightness(1) contrast(1) sepia(0);
+    transform: scale(1);
+  }
+}
+
+.developing-badge {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background: rgba(35, 15, 28, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffd8e5;
+  border: 1px solid rgba(255, 185, 215, 0.45);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.spin-slow {
+  animation: spin-anim 3s linear infinite;
+}
+
+@keyframes spin-anim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Subtle tap to expand badge overlay */
+.film-zoom-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(18, 8, 15, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffe6ef;
+  border: 1px solid rgba(255, 185, 215, 0.4);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+@media (hover: hover) {
+  .film-image-container:hover .film-zoom-badge {
+    background: rgba(18, 8, 15, 0.92);
+    border-color: rgba(255, 185, 215, 0.7);
+  }
+}
+
+/* Polaroid handwritten caption */
+.developing-polaroid figcaption {
+  padding-top: 12px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 16px;
+  font-style: italic;
+  text-align: center;
+  color: #58374a;
+  letter-spacing: 0.02em;
+}
+
+/* Placeholder fallback */
+.photo-placeholder {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(25, 12, 22, 0.95);
+  color: #ffd8e5;
+  font-size: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+/* Actions below Polaroid */
+.film-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.shake-film-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 222, 237, 0.25);
+  border-radius: 20px;
+  color: #ffd8e5;
+  padding: 6px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.shake-film-btn:hover {
+  background: rgba(255, 185, 215, 0.2);
+  border-color: #ff9fbc;
+  transform: scale(1.04);
+}
+
+.developing-polaroid.shaking-film {
+  animation: film-vibrate 0.6s ease-in-out;
+}
+
+@keyframes film-vibrate {
+  0%, 100% { transform: rotate(1deg) scale(1); }
+  25% { transform: rotate(-3deg) scale(1.03); }
+  50% { transform: rotate(4deg) scale(1.04); }
+  75% { transform: rotate(-2deg) scale(1.02); }
+}
+
+/* Lightbox Modal (Full-Screen 16:9 / 9:16 Photo View) */
+.photo-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 3, 7, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  cursor: zoom-out;
+}
+
+.photo-lightbox-content {
+  position: relative;
+  max-width: 95vw;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: -46px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.lightbox-close-btn:hover {
+  background: rgba(255, 185, 215, 0.4);
+  transform: scale(1.08);
+}
+
+.lightbox-close-btn:active {
+  transform: scale(0.95);
+}
+
+.lightbox-full-img {
+  max-width: 92vw;
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.18);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lightbox-caption {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(16px, 4vw, 20px);
+  font-style: italic;
+  color: #ffd8e5;
+  margin-top: 14px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-align: center;
+}

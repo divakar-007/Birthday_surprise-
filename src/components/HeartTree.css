@@ -1,0 +1,186 @@
+.heart-tree-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 12px auto 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  outline: none;
+}
+
+.tree-ambient-glow {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 77, 128, 0.35) 0%,
+    rgba(255, 159, 188, 0.18) 50%,
+    transparent 75%
+  );
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: 0;
+  animation: glow-pulse 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1;
+  }
+}
+
+.heart-tree-svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  overflow: visible;
+  filter: drop-shadow(0 10px 25px rgba(255, 60, 110, 0.28));
+}
+
+/* Tree Trunk subtle organic sway */
+.tree-trunk-group {
+  transform-origin: 160px 268px;
+  animation: trunk-sway 6s ease-in-out infinite alternate;
+}
+
+@keyframes trunk-sway {
+  0% { transform: rotate(-0.7deg); }
+  100% { transform: rotate(0.7deg); }
+}
+
+/* Heart Leaves Canopy */
+.heart-canopy-layer {
+  position: relative;
+  z-index: 3;
+}
+
+.animated-heart-leaf {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: leaf-flutter infinite ease-in-out alternate;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+@keyframes leaf-flutter {
+  0% {
+    transform: scale(0.96) rotate(-2.5deg);
+  }
+  50% {
+    transform: scale(1.06) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(-1deg);
+  }
+}
+
+.heart-tree-container:hover .animated-heart-leaf {
+  filter: brightness(1.15) drop-shadow(0 0 6px rgba(255, 185, 215, 0.7));
+}
+
+/* Drifting falling hearts from canopy */
+.drifting-heart-node {
+  animation: drift-down-fall 5s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+
+@keyframes drift-down-fall {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.6);
+  }
+  20% {
+    opacity: 0.9;
+    transform: translate(-6px, 18px) rotate(-15deg) scale(0.85);
+  }
+  50% {
+    opacity: 0.75;
+    transform: translate(8px, 45px) rotate(25deg) scale(0.75);
+  }
+  80% {
+    opacity: 0.4;
+    transform: translate(-10px, 75px) rotate(-10deg) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(4px, 95px) rotate(20deg) scale(0.4);
+  }
+}
+
+/* Tree bloom burst when tapped */
+.heart-tree-container.tree-blooming-burst .animated-heart-leaf {
+  animation: leaf-burst 1s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+}
+
+@keyframes leaf-burst {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.28);
+    filter: brightness(1.3) drop-shadow(0 0 10px #ff7597);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Little banner under the tree */
+.heart-tree-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 216, 231, 0.25);
+  color: #ffd8e5;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 10px rgba(255, 159, 188, 0.5);
+  transition: all 0.2s ease;
+}
+
+.heart-tree-container:hover .heart-tree-badge {
+  background: rgba(255, 185, 215, 0.18);
+  border-color: rgba(255, 216, 231, 0.6);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+  .heart-tree-container {
+    max-width: 275px;
+    margin: 10px auto 16px;
+  }
+  .heart-tree-svg {
+    max-height: 240px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-ambient-glow,
+  .tree-trunk-group,
+  .animated-heart-leaf,
+  .drifting-heart-node {
+    animation: none !important;
+  }
+}

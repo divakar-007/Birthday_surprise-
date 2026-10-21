@@ -1,0 +1,288 @@
+.vinyl-player-widget {
+  margin-top: 18px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.turntable-deck {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 240, 248, 0.09), rgba(255, 216, 231, 0.04));
+  border: 1px solid rgba(255, 222, 237, 0.22);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.turntable-deck:hover {
+  border-color: rgba(255, 185, 215, 0.45);
+  background: linear-gradient(135deg, rgba(255, 240, 248, 0.13), rgba(255, 216, 231, 0.07));
+}
+
+.turntable-deck.is-deck-playing {
+  border-color: rgba(255, 185, 215, 0.55);
+  background: linear-gradient(135deg, rgba(255, 240, 248, 0.15), rgba(255, 216, 231, 0.08));
+  box-shadow: 0 12px 35px rgba(255, 110, 160, 0.2);
+}
+
+.vinyl-groove-stage {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+}
+
+/* Vinyl Disc */
+.vinyl-disc {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #1b1b1f 0%, #0d0d10 65%, #222228 100%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), inset 0 0 4px rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.vinyl-disc.spinning {
+  animation: spinVinyl 3.5s linear infinite;
+}
+
+.vinyl-disc.paused {
+  animation: spinVinyl 3.5s linear infinite;
+  animation-play-state: paused;
+}
+
+@keyframes spinVinyl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vinyl-sheen-highlight {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.12) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.vinyl-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+}
+
+.ring-1 { width: 68px; height: 68px; }
+.ring-2 { width: 52px; height: 52px; }
+.ring-3 { width: 40px; height: 40px; }
+
+.vinyl-center-label {
+  position: relative;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff6b95, #b3254e);
+  border: 1.5px solid #ffd7a0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.vinyl-heart {
+  font-size: 9px;
+  color: #fff0f5;
+  line-height: 1;
+}
+
+.vinyl-label-text {
+  font-size: 6px;
+  color: #ffd8e5;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+/* Turntable Tonearm */
+.turntable-tonearm {
+  position: absolute;
+  top: 4px;
+  right: -4px;
+  width: 24px;
+  height: 44px;
+  transform-origin: top right;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.turntable-tonearm.arm-playing {
+  transform: rotate(26deg);
+}
+
+.turntable-tonearm.arm-parked {
+  transform: rotate(0deg);
+}
+
+.tonearm-pivot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f5d9a5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.tonearm-bar {
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  width: 2px;
+  height: 36px;
+  background: #f5d9a5;
+  transform: rotate(-12deg);
+  transform-origin: top right;
+}
+
+.tonearm-head {
+  position: absolute;
+  bottom: 0;
+  left: 3px;
+  width: 6px;
+  height: 9px;
+  border-radius: 1px;
+  background: #ff9fbc;
+}
+
+/* Turntable Track Info */
+.turntable-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.turntable-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.now-playing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--pink);
+  font-weight: 700;
+}
+
+.current-track-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(17px, 4vw, 20px);
+  color: #fff0f6;
+  font-weight: 600;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.current-track-artist {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+}
+
+/* Equalizer sound wave bars */
+.sound-wave-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 14px;
+}
+
+.sound-wave-bars .bar {
+  width: 3px;
+  background: #ff9fbc;
+  border-radius: 2px;
+  animation: bounceBar 0.8s ease-in-out infinite alternate;
+}
+
+.bar-1 { height: 10px; animation-delay: 0s; }
+.bar-2 { height: 14px; animation-delay: 0.15s; }
+.bar-3 { height: 7px; animation-delay: 0.35s; }
+.bar-4 { height: 12px; animation-delay: 0.2s; }
+.bar-5 { height: 9px; animation-delay: 0.45s; }
+
+@keyframes bounceBar {
+  0% { height: 4px; opacity: 0.4; }
+  100% { height: 14px; opacity: 1; }
+}
+
+/* Single Song Play/Pause Button */
+.vinyl-single-play-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 216, 231, 0.55);
+  background: linear-gradient(135deg, #ff7b9f, #b3254e);
+  color: #fff0f5;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-shadow: 0 4px 18px rgba(255, 123, 159, 0.45);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.vinyl-single-play-btn:hover,
+.vinyl-single-play-btn.playing {
+  background: linear-gradient(135deg, #ff95b3, #c92c5a);
+  box-shadow: 0 6px 24px rgba(255, 123, 159, 0.65);
+  transform: scale(1.06);
+}
+
+@media (max-width: 480px) {
+  .turntable-deck {
+    padding: 12px;
+    gap: 12px;
+  }
+  .vinyl-groove-stage {
+    width: 68px;
+    height: 68px;
+  }
+  .vinyl-disc {
+    width: 68px;
+    height: 68px;
+  }
+  .ring-1 { width: 54px; height: 54px; }
+  .ring-2 { width: 42px; height: 42px; }
+  .ring-3 { width: 32px; height: 32px; }
+  .vinyl-single-play-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
